@@ -1,0 +1,12 @@
+currentDate = DateTime.LocalNow(),
+startDate = Date.From(currentDate),
+endDate = Date.From(Date.AddDays(currentDate, -9)),
+dateList = List.Generate(
+	() => startDate,
+	each _ => endDate,
+	each Date.From(Date.AddDays(_, -1)),
+	each _
+),
+#"Converted to Table" = Table.FromList(dateList, Splitter.SplitByNothing(), null, null, ExtraValues.Error)
+
+	

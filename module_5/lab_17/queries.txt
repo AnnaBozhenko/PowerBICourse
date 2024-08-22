@@ -1,0 +1,69 @@
+/*----------------------------------------*/
+/* Total speech lines count per character */
+/*----------------------------------------*/
+
+DEFINE
+MEASURE 'DateTableTemplate_7e749d58-88c5-46d7-bb82-b5ad790914a4'[MyMeasure] = COUNTROWS(simpsons_script_lines)
+EVALUATE
+SUMMARIZECOLUMNS(
+    simpsons_characters[name],
+    "MyMeasure", [MyMeasure]
+)
+ORDER BY 
+    simpsons_characters[name] ASC
+
+/*----------------------------------------*/
+/* Total dialogs count per episode        */
+/*----------------------------------------*/
+
+DEFINE
+MEASURE 'DateTableTemplate_7e749d58-88c5-46d7-bb82-b5ad790914a4'[Speech_line_counter] = COUNTROWS(simpsons_script_lines)
+EVALUATE
+SUMMARIZECOLUMNS(
+    simpsons_episodes[title],
+    KEEPFILTERS( TREATAS( {True}, simpsons_script_lines[speaking_line] )),
+    "Speech_line_counter", [Speech_line_counter]
+)
+ORDER BY 
+    simpsons_episodes[title] ASC
+
+/*----------------------------------------*/
+/* Total episodes count per each location */
+/*----------------------------------------*/
+
+DEFINE
+MEASURE 'DateTableTemplate_7e749d58-88c5-46d7-bb82-b5ad790914a4'[episodes_counter] = COUNTROWS(simpsons_episodes)
+EVALUATE
+SUMMARIZECOLUMNS(
+    simpsons_locations[name],
+    "episodes_counter", [episodes_counter]
+)
+ORDER BY 
+    simpsons_locations[name] ASC
+
+/*----------------------------------------*/
+/* Total episodes count per each season   */
+/*----------------------------------------*/
+DEFINE
+MEASURE 'DateTableTemplate_7e749d58-88c5-46d7-bb82-b5ad790914a4'[episodes_counter] = COUNTROWS(simpsons_episodes)
+EVALUATE
+SUMMARIZECOLUMNS(
+    simpsons_episodes[season],
+    "episodes_counter", [episodes_counter]
+)
+ORDER BY 
+    simpsons_episodes[season] ASC
+
+/*----------------------------------------*/
+/* Average IMDb rate per each character   */
+/*----------------------------------------*/
+
+DEFINE
+MEASURE 'DateTableTemplate_7e749d58-88c5-46d7-bb82-b5ad790914a4'[Average_imdd_rating] = CALCULATE(AVERAGE(simpsons_episodes[imdb_rating]))
+EVALUATE
+SUMMARIZECOLUMNS(
+    simpsons_characters[name],
+    "Average_imdd_rating", [Average_imdd_rating]
+)
+ORDER BY 
+    simpsons_characters[name] ASC

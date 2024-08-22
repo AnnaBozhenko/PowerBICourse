@@ -1,0 +1,1141 @@
+{
+  "name": "Simsons",
+  "id": "72307cdb-cfa1-414a-bc1e-d4550a911f78",
+  "compatibilityLevel": 1550,
+  "model": {
+    "culture": "ru-RU",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "sourceQueryCulture": "ru-UA",
+    "tables": [
+      {
+        "name": "simpsons_episodes",
+        "lineageTag": "26f5e8df-6258-4039-a7c9-94c0f5477afd",
+        "columns": [
+          {
+            "name": "id",
+            "dataType": "int64",
+            "sourceColumn": "id",
+            "formatString": "0",
+            "lineageTag": "399a0cfe-a13c-4c4d-8a73-251eb67b9399",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "title",
+            "dataType": "string",
+            "sourceColumn": "title",
+            "lineageTag": "9b6da4c3-6ee1-4f9c-95e9-2e04727f5599",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "original_air_date",
+            "dataType": "dateTime",
+            "sourceColumn": "original_air_date",
+            "formatString": "Long Date",
+            "lineageTag": "524912f4-ecc4-4a64-9119-ec5076c948ad",
+            "summarizeBy": "none",
+            "variations": [
+              {
+                "name": "Изменение",
+                "relationship": "42bd7daf-5bfa-4725-9d13-890a5a9e217c",
+                "defaultHierarchy": {
+                  "table": "LocalDateTable_718907eb-8faf-4d6a-9158-ccaceff65592",
+                  "hierarchy": "Иерархия дат"
+                },
+                "isDefault": true
+              }
+            ],
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "UnderlyingDateTimeDataType",
+                "value": "Date"
+              }
+            ]
+          },
+          {
+            "name": "season",
+            "dataType": "int64",
+            "sourceColumn": "season",
+            "formatString": "0",
+            "lineageTag": "7bc63c73-ebbb-4aac-9d56-6d2849a81ee3",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "number_in_season",
+            "dataType": "int64",
+            "sourceColumn": "number_in_season",
+            "formatString": "0",
+            "lineageTag": "b716efb7-1b8d-4ed0-8016-1ecad1b0a5d8",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "number_in_series",
+            "dataType": "int64",
+            "sourceColumn": "number_in_series",
+            "formatString": "0",
+            "lineageTag": "be975295-cf8f-49d7-92d5-3d82937574f8",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "us_viewers_in_millions",
+            "dataType": "double",
+            "sourceColumn": "us_viewers_in_millions",
+            "lineageTag": "d134d88e-ca48-4574-a064-b33e77d69725",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "PBI_FormatHint",
+                "value": "{\"isGeneralNumber\":true}"
+              }
+            ]
+          },
+          {
+            "name": "imdb_rating",
+            "dataType": "double",
+            "sourceColumn": "imdb_rating",
+            "lineageTag": "10182813-aece-4252-a292-ca6a8302e011",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "PBI_FormatHint",
+                "value": "{\"isGeneralNumber\":true}"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "simpsons_episodes-047a3085-995d-4ed5-98e8-3dedea1d4867",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Источник = Csv.Document(Web.Contents(\"https://raw.githubusercontent.com/areevesman/the-simpsons/master/data/simpsons_episodes.csv\"),[Delimiter=\",\", Columns=13, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Повышенные заголовки\" = Table.PromoteHeaders(Источник, [PromoteAllScalars=true]),",
+                "    #\"Измененный тип\" = Table.TransformColumnTypes(#\"Повышенные заголовки\",{{\"id\", Int64.Type}, {\"title\", type text}, {\"original_air_date\", type date}, {\"production_code\", type text}, {\"season\", Int64.Type}, {\"number_in_season\", Int64.Type}, {\"number_in_series\", Int64.Type}, {\"us_viewers_in_millions\", type text}, {\"views\", Int64.Type}, {\"imdb_rating\", type text}, {\"imdb_votes\", Int64.Type}, {\"image_url\", type text}, {\"video_url\", type text}}),",
+                "    #\"Замененное значение\" = Table.ReplaceValue(#\"Измененный тип\",\".\",\",\",Replacer.ReplaceText,{\"us_viewers_in_millions\"}),",
+                "    #\"Измененный тип1\" = Table.TransformColumnTypes(#\"Замененное значение\",{{\"us_viewers_in_millions\", type number}}),",
+                "    #\"Замененное значение1\" = Table.ReplaceValue(#\"Измененный тип1\",\".\",\",\",Replacer.ReplaceText,{\"imdb_rating\"}),",
+                "    #\"Измененный тип2\" = Table.TransformColumnTypes(#\"Замененное значение1\",{{\"imdb_rating\", type number}}),",
+                "    #\"Удаленные столбцы\" = Table.RemoveColumns(#\"Измененный тип2\",{\"production_code\", \"views\", \"image_url\", \"video_url\", \"imdb_votes\"})",
+                "in",
+                "    #\"Удаленные столбцы\""
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_NavigationStepName",
+            "value": "Навигация"
+          },
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ]
+      },
+      {
+        "name": "DateTableTemplate_7e749d58-88c5-46d7-bb82-b5ad790914a4",
+        "isHidden": true,
+        "isPrivate": true,
+        "lineageTag": "2accff08-acb1-4429-81a2-c2c838556b3c",
+        "columns": [
+          {
+            "type": "calculatedTableColumn",
+            "name": "Date",
+            "dataType": "dateTime",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "sourceColumn": "[Date]",
+            "formatString": "General Date",
+            "lineageTag": "7a8e7350-7066-4d66-ad9a-4be35d7872c9",
+            "dataCategory": "PaddedDateTableDates",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "Год",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "YEAR([Date])",
+            "formatString": "0",
+            "lineageTag": "0e7269c4-c86f-4b25-bffa-178857846331",
+            "dataCategory": "Years",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Year"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "№Месяца",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "MONTH([Date])",
+            "formatString": "0",
+            "lineageTag": "9c66f830-b952-46e4-8f8a-d44b605dc064",
+            "dataCategory": "MonthOfYear",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "MonthNumber"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "Месяц",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "FORMAT([Date], \"MMMM\")",
+            "sortByColumn": "№Месяца",
+            "lineageTag": "787d4865-99e2-4454-9a36-0e90bad3839b",
+            "dataCategory": "Months",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Month"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "№Квартала",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "INT(([№Месяца] + 2) / 3)",
+            "formatString": "0",
+            "lineageTag": "1f8fa1ac-04ce-4967-9b4f-8fabee4a8a5a",
+            "dataCategory": "QuarterOfYear",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "QuarterNumber"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "Квартал",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "\"Кв. \" & [№Квартала]",
+            "sortByColumn": "№Квартала",
+            "lineageTag": "38574cf3-dccf-4497-a334-8d4dc26494f1",
+            "dataCategory": "Quarters",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Quarter"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "День",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "DAY([Date])",
+            "formatString": "0",
+            "lineageTag": "8597a320-2d2a-4dc1-828d-7f7ba53a54fc",
+            "dataCategory": "DayOfMonth",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Day"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "DateTableTemplate_7e749d58-88c5-46d7-bb82-b5ad790914a4-d9bc893c-df34-4aa5-a047-695d3577235f",
+            "mode": "import",
+            "source": {
+              "type": "calculated",
+              "expression": "Calendar(Date(2015,1,1), Date(2015,1,1))"
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Иерархия дат",
+            "lineageTag": "11146a63-9998-4bb4-a385-a99fbef7a62e",
+            "levels": [
+              {
+                "name": "Год",
+                "ordinal": 0,
+                "column": "Год",
+                "lineageTag": "993a3136-6ef9-4fcd-8f2d-2403e319927f"
+              },
+              {
+                "name": "Квартал",
+                "ordinal": 1,
+                "column": "Квартал",
+                "lineageTag": "c6735600-2ac2-4ba1-b0a2-5a453522d5b2"
+              },
+              {
+                "name": "Месяц",
+                "ordinal": 2,
+                "column": "Месяц",
+                "lineageTag": "dc7a396f-b04e-44fb-9bf8-b78311ca74c7"
+              },
+              {
+                "name": "День",
+                "ordinal": 3,
+                "column": "День",
+                "lineageTag": "f6c7cf03-4dc8-49a7-9642-b0714ab52c22"
+              }
+            ],
+            "annotations": [
+              {
+                "name": "TemplateId",
+                "value": "DateHierarchy"
+              }
+            ]
+          }
+        ],
+        "annotations": [
+          {
+            "name": "__PBI_TemplateDateTable",
+            "value": "true"
+          },
+          {
+            "name": "DefaultItem",
+            "value": "DateHierarchy"
+          }
+        ]
+      },
+      {
+        "name": "LocalDateTable_718907eb-8faf-4d6a-9158-ccaceff65592",
+        "isHidden": true,
+        "showAsVariationsOnly": true,
+        "lineageTag": "28e62492-30d2-48cd-83ce-8e8d9bd579ea",
+        "columns": [
+          {
+            "type": "calculatedTableColumn",
+            "name": "Date",
+            "dataType": "dateTime",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "sourceColumn": "[Date]",
+            "formatString": "General Date",
+            "lineageTag": "e067c4d7-9c15-4429-88c1-715f56e3081e",
+            "dataCategory": "PaddedDateTableDates",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "Год",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "YEAR([Date])",
+            "formatString": "0",
+            "lineageTag": "d60d4c10-af47-40f9-9453-c6fb35683988",
+            "dataCategory": "Years",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Year"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "№Месяца",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "MONTH([Date])",
+            "formatString": "0",
+            "lineageTag": "659553e1-a4e6-4eb1-a5be-946ef1ca1b13",
+            "dataCategory": "MonthOfYear",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "MonthNumber"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "Месяц",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "FORMAT([Date], \"MMMM\")",
+            "sortByColumn": "№Месяца",
+            "lineageTag": "437cadc1-736d-42d3-b608-22413f77396f",
+            "dataCategory": "Months",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Month"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "№Квартала",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "INT(([№Месяца] + 2) / 3)",
+            "formatString": "0",
+            "lineageTag": "e170b270-8c98-4421-88d4-eb69c2292277",
+            "dataCategory": "QuarterOfYear",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "QuarterNumber"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "Квартал",
+            "dataType": "string",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "\"Кв. \" & [№Квартала]",
+            "sortByColumn": "№Квартала",
+            "lineageTag": "00333e88-9455-46fb-9e34-015e9df0cd2e",
+            "dataCategory": "Quarters",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Quarter"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "День",
+            "dataType": "int64",
+            "isDataTypeInferred": true,
+            "isHidden": true,
+            "expression": "DAY([Date])",
+            "formatString": "0",
+            "lineageTag": "d95c12cd-6dfa-4333-b763-fae7999d8eb3",
+            "dataCategory": "DayOfMonth",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Day"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "LocalDateTable_718907eb-8faf-4d6a-9158-ccaceff65592-c163bf8f-6481-427b-bc8f-4566dd8d51f6",
+            "mode": "import",
+            "source": {
+              "type": "calculated",
+              "expression": "Calendar(Date(Year(MIN('simpsons_episodes'[original_air_date])), 1, 1), Date(Year(MAX('simpsons_episodes'[original_air_date])), 12, 31))"
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Иерархия дат",
+            "lineageTag": "303726f3-56c0-478a-806f-f761bf037637",
+            "levels": [
+              {
+                "name": "Год",
+                "ordinal": 0,
+                "column": "Год",
+                "lineageTag": "67adcc2d-30fc-47b4-8f77-eda798eb3d56"
+              },
+              {
+                "name": "Квартал",
+                "ordinal": 1,
+                "column": "Квартал",
+                "lineageTag": "86345ffe-061d-4d3d-ba7b-7ff7c19c560b"
+              },
+              {
+                "name": "Месяц",
+                "ordinal": 2,
+                "column": "Месяц",
+                "lineageTag": "9f58b2f5-3b8b-4e3a-ba42-cc2ffc6d15af"
+              },
+              {
+                "name": "День",
+                "ordinal": 3,
+                "column": "День",
+                "lineageTag": "82b4acf4-40b2-4b9b-91ca-5582f06b6782"
+              }
+            ],
+            "annotations": [
+              {
+                "name": "TemplateId",
+                "value": "DateHierarchy"
+              }
+            ]
+          }
+        ],
+        "annotations": [
+          {
+            "name": "__PBI_LocalDateTable",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "name": "simpsons_characters",
+        "lineageTag": "a6b37f56-0796-4e10-b8a9-98834e428759",
+        "columns": [
+          {
+            "name": "id",
+            "dataType": "int64",
+            "sourceColumn": "id",
+            "formatString": "0",
+            "lineageTag": "6279a50d-5a4b-4af5-8843-d1302168f986",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "name",
+            "dataType": "string",
+            "sourceColumn": "name",
+            "lineageTag": "1648b00f-7b52-49e5-bc73-6622959685a0",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "simpsons_characters-c62830cc-fb2a-4af6-87f3-0feadfe70d11",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Источник = Csv.Document(Web.Contents(\"https://raw.githubusercontent.com/areevesman/the-simpsons/master/data/simpsons_characters.csv\"),[Delimiter=\",\", Columns=4, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Повышенные заголовки\" = Table.PromoteHeaders(Источник, [PromoteAllScalars=true]),",
+                "    #\"Измененный тип\" = Table.TransformColumnTypes(#\"Повышенные заголовки\",{{\"id\", Int64.Type}, {\"name\", type text}, {\"normalized_name\", type text}, {\"gender\", type text}}),",
+                "    #\"Удаленные столбцы\" = Table.RemoveColumns(#\"Измененный тип\",{\"normalized_name\", \"gender\"})",
+                "in",
+                "    #\"Удаленные столбцы\""
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          },
+          {
+            "name": "PBI_NavigationStepName",
+            "value": "Навигация"
+          }
+        ]
+      },
+      {
+        "name": "simpsons_locations",
+        "lineageTag": "4aaa4281-3732-42a6-a109-8559be27c231",
+        "columns": [
+          {
+            "name": "id",
+            "dataType": "int64",
+            "sourceColumn": "id",
+            "formatString": "0",
+            "lineageTag": "f9c47471-475e-4804-b9aa-57ddf0c12c42",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "name",
+            "dataType": "string",
+            "sourceColumn": "name",
+            "lineageTag": "71f098ce-8ccc-449c-9ee6-c1cbcf0ab1de",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "simpsons_locations-8b50d572-12c2-48f8-8d0c-f5f1e2c68fe0",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Источник = Csv.Document(Web.Contents(\"https://raw.githubusercontent.com/areevesman/the-simpsons/master/data/simpsons_locations.csv\"),[Delimiter=\",\", Columns=3, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Повышенные заголовки\" = Table.PromoteHeaders(Источник, [PromoteAllScalars=true]),",
+                "    #\"Измененный тип\" = Table.TransformColumnTypes(#\"Повышенные заголовки\",{{\"id\", Int64.Type}, {\"name\", type text}, {\"normalized_name\", type text}}),",
+                "    #\"Удаленные столбцы\" = Table.RemoveColumns(#\"Измененный тип\",{\"normalized_name\"})",
+                "in",
+                "    #\"Удаленные столбцы\""
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_NavigationStepName",
+            "value": "Навигация"
+          },
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ]
+      },
+      {
+        "name": "simpsons_script_lines",
+        "lineageTag": "4ad48167-0d47-4d8b-b09c-9075eee71e51",
+        "columns": [
+          {
+            "name": "id",
+            "dataType": "int64",
+            "sourceColumn": "id",
+            "formatString": "0",
+            "lineageTag": "32eb75d8-b47f-4bcc-90e4-eb9065e6bf92",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "episode_id",
+            "dataType": "int64",
+            "sourceColumn": "episode_id",
+            "formatString": "0",
+            "lineageTag": "e9f9d1e7-a5b9-42c3-a5b0-c4a03bc7e5e0",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "speaking_line",
+            "dataType": "boolean",
+            "sourceColumn": "speaking_line",
+            "formatString": "\"TRUE\";\"TRUE\";\"FALSE\"",
+            "lineageTag": "20b32c0f-c896-47c9-a21a-e46f5cefe95b",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "character_id",
+            "dataType": "int64",
+            "sourceColumn": "character_id",
+            "formatString": "0",
+            "lineageTag": "bb60ec81-cd4a-4341-8c30-c9bbc2df03be",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "location_id",
+            "dataType": "int64",
+            "sourceColumn": "location_id",
+            "formatString": "0",
+            "lineageTag": "8e6fdee5-896e-46e8-bb05-ff8d7f3afd7d",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "spoken_words",
+            "dataType": "string",
+            "sourceColumn": "spoken_words",
+            "lineageTag": "e550628f-8859-4b7e-b484-72284d42da89",
+            "summarizeBy": "none",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "word_count",
+            "dataType": "int64",
+            "sourceColumn": "word_count",
+            "formatString": "0",
+            "lineageTag": "6651d09b-9609-42ea-a993-c34c50ae4df8",
+            "summarizeBy": "sum",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          }
+        ],
+        "partitions": [
+          {
+            "name": "simpsons_script_lines-5ebfbb7a-f208-4618-8cea-cdb4b34e3bbc",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Источник = Csv.Document(Web.Contents(\"https://raw.githubusercontent.com/areevesman/the-simpsons/master/data/simpsons_script_lines.csv\"),[Delimiter=\",\", Columns=13, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Повышенные заголовки\" = Table.PromoteHeaders(Источник, [PromoteAllScalars=true]),",
+                "    #\"Измененный тип\" = Table.TransformColumnTypes(#\"Повышенные заголовки\",{{\"id\", Int64.Type}, {\"episode_id\", Int64.Type}, {\"number\", Int64.Type}, {\"raw_text\", type text}, {\"timestamp_in_ms\", Int64.Type}, {\"speaking_line\", type logical}, {\"character_id\", Int64.Type}, {\"location_id\", Int64.Type}, {\"raw_character_text\", type text}, {\"raw_location_text\", type text}, {\"spoken_words\", type text}, {\"normalized_text\", type text}, {\"word_count\", Int64.Type}}),",
+                "    #\"Удаленные столбцы\" = Table.RemoveColumns(#\"Измененный тип\",{\"raw_text\", \"timestamp_in_ms\", \"number\", \"raw_location_text\", \"raw_character_text\", \"normalized_text\"})",
+                "in",
+                "    #\"Удаленные столбцы\""
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "New Measure",
+            "expression": [
+              "COUNTROWS(simpsons_script_lines)",
+              "EVALUATE",
+              "SUMMARIZECOLUMNS(",
+              "    simpsons_characters[name],",
+              "    \"MyMeasure\", [MyMeasure]",
+              ")",
+              "ORDER BY ",
+              "    simpsons_characters[name] ASC"
+            ],
+            "lineageTag": "ccb524d7-4505-454b-9b0a-8ca1be5b288a"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_NavigationStepName",
+            "value": "Навигация"
+          },
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "42bd7daf-5bfa-4725-9d13-890a5a9e217c",
+        "fromTable": "simpsons_episodes",
+        "fromColumn": "original_air_date",
+        "toTable": "LocalDateTable_718907eb-8faf-4d6a-9158-ccaceff65592",
+        "toColumn": "Date",
+        "joinOnDateBehavior": "datePartOnly"
+      },
+      {
+        "name": "8f678a0d-c167-4eab-9f1f-92391f935047",
+        "fromTable": "simpsons_script_lines",
+        "fromColumn": "character_id",
+        "toTable": "simpsons_characters",
+        "toColumn": "id",
+        "crossFilteringBehavior": "bothDirections"
+      },
+      {
+        "name": "872ecbc8-1adb-4a06-a3c1-3e5ce5e87631",
+        "fromTable": "simpsons_script_lines",
+        "fromColumn": "episode_id",
+        "toTable": "simpsons_episodes",
+        "toColumn": "id",
+        "crossFilteringBehavior": "bothDirections"
+      },
+      {
+        "name": "e3353bca-dc9a-466f-8057-cc43454db793",
+        "fromTable": "simpsons_script_lines",
+        "fromColumn": "location_id",
+        "toTable": "simpsons_locations",
+        "toColumn": "id",
+        "crossFilteringBehavior": "bothDirections"
+      }
+    ],
+    "cultures": [
+      {
+        "name": "ru-RU",
+        "linguisticMetadata": {
+          "content": {
+            "Version": "2.0.0",
+            "Language": "en-US",
+            "DynamicImprovement": "HighConfidence",
+            "Entities": {
+              "simpsons_episodes.title": {
+                "Definition": {
+                  "Binding": {
+                    "ConceptualEntity": "simpsons_episodes",
+                    "ConceptualProperty": "title"
+                  }
+                },
+                "State": "Generated",
+                "Terms": [
+                  {
+                    "Назва": {
+                      "State": "Suggested",
+                      "Source": {
+                        "Type": "External",
+                        "Agent": "PowerBI.VisualColumnRename"
+                      },
+                      "Weight": 0.9
+                    }
+                  },
+                  {
+                    "Серія": {
+                      "State": "Suggested",
+                      "Source": {
+                        "Type": "External",
+                        "Agent": "PowerBI.VisualColumnRename"
+                      },
+                      "Weight": 0.9
+                    }
+                  }
+                ]
+              },
+              "simpsons_episodes.number_in_season": {
+                "Definition": {
+                  "Binding": {
+                    "ConceptualEntity": "simpsons_episodes",
+                    "ConceptualProperty": "number_in_season"
+                  }
+                },
+                "State": "Generated",
+                "Terms": [
+                  {
+                    "Номер": {
+                      "State": "Suggested",
+                      "Source": {
+                        "Type": "External",
+                        "Agent": "PowerBI.VisualColumnRename"
+                      },
+                      "Weight": 0.9
+                    }
+                  }
+                ]
+              },
+              "simpsons_episodes.season": {
+                "Definition": {
+                  "Binding": {
+                    "ConceptualEntity": "simpsons_episodes",
+                    "ConceptualProperty": "season"
+                  }
+                },
+                "State": "Generated",
+                "Terms": [
+                  {
+                    "Сезон": {
+                      "State": "Suggested",
+                      "Source": {
+                        "Type": "External",
+                        "Agent": "PowerBI.VisualColumnRename"
+                      },
+                      "Weight": 0.9
+                    }
+                  }
+                ]
+              },
+              "simpsons_locations.name": {
+                "Definition": {
+                  "Binding": {
+                    "ConceptualEntity": "simpsons_locations",
+                    "ConceptualProperty": "name"
+                  }
+                },
+                "State": "Generated",
+                "Terms": [
+                  {
+                    "Локація": {
+                      "State": "Suggested",
+                      "Source": {
+                        "Type": "External",
+                        "Agent": "PowerBI.VisualColumnRename"
+                      },
+                      "Weight": 0.9
+                    }
+                  }
+                ]
+              },
+              "simpsons_characters.name": {
+                "Definition": {
+                  "Binding": {
+                    "ConceptualEntity": "simpsons_characters",
+                    "ConceptualProperty": "name"
+                  }
+                },
+                "State": "Generated",
+                "Terms": [
+                  {
+                    "Персонаж": {
+                      "State": "Suggested",
+                      "Source": {
+                        "Type": "External",
+                        "Agent": "PowerBI.VisualColumnRename"
+                      },
+                      "Weight": 0.9
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "contentType": "json"
+        }
+      }
+    ],
+    "roles": [
+      {
+        "name": "Новая роль",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "simpsons_characters",
+            "filterExpression": "[name] = \"Kids\""
+          },
+          {
+            "name": "simpsons_episodes"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_Id",
+            "value": "d32e4b0c91654542811a9994c4ba2314"
+          }
+        ]
+      },
+      {
+        "name": "Повний доступ",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "simpsons_characters"
+          },
+          {
+            "name": "simpsons_episodes"
+          },
+          {
+            "name": "simpsons_locations"
+          },
+          {
+            "name": "simpsons_script_lines"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_Id",
+            "value": "d32e4b0c91654542811a9994c4ba2314"
+          }
+        ]
+      },
+      {
+        "name": "Обмежений дотуп",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "simpsons_characters",
+            "filterExpression": "'simpsons_episodes'[season] = 1",
+            "metadataPermission": "none"
+          },
+          {
+            "name": "simpsons_episodes",
+            "filterExpression": "[season] = 1"
+          },
+          {
+            "name": "simpsons_locations",
+            "metadataPermission": "none"
+          },
+          {
+            "name": "simpsons_script_lines",
+            "metadataPermission": "none"
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_Id",
+            "value": "d32e4b0c91654542811a9994c4ba2314"
+          }
+        ]
+      }
+    ],
+    "annotations": [
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"simpsons_episodes\",\"simpsons_characters\",\"simpsons_locations\",\"simpsons_script_lines\"]"
+      },
+      {
+        "name": "__PBI_TimeIntelligenceEnabled",
+        "value": "1"
+      },
+      {
+        "name": "PBIDesktopVersion",
+        "value": "2.115.663.0"
+      },
+      {
+        "name": "TabularEditor_SerializeOptions",
+        "value": "{\"IgnoreInferredObjects\":true,\"IgnoreInferredProperties\":true,\"IgnoreTimestamps\":true,\"SplitMultilineStrings\":true,\"PrefixFilenames\":false,\"LocalTranslations\":false,\"LocalPerspectives\":false,\"LocalRelationships\":false,\"Levels\":[\"Data Sources\",\"Shared Expressions\",\"Perspectives\",\"Relationships\",\"Roles\",\"Tables\",\"Tables/Columns\",\"Tables/Hierarchies\",\"Tables/Measures\",\"Tables/Partitions\",\"Tables/Calculation Items\",\"Translations\"]}"
+      }
+    ]
+  }
+}

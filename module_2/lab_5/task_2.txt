@@ -1,0 +1,12 @@
+dimensions (static):
++ author
++ book
++ client
++ city
+
+fact (dynamic):
++ buy
++ book
++ buy_book
++ buy_step
++ step
